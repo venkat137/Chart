@@ -1,0 +1,59 @@
+﻿@{ 
+    Layout = null;
+}
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <script type="text/javascript">
+
+        window.onload = function () {
+
+            var dateValues =  @Html.Raw(ViewBag.Date)        
+            var closeValues = @Html.Raw(ViewBag.Close);
+
+            var dataPoints = [];
+            for (var i = 0; i < dateValues.length & i < closeValues.length; i++) {
+
+                var dValue = dateValues[i].split('T');
+                var orgValue = dValue[0].split('-');
+
+                dataPoints.push({ x: new Date(orgValue[0], orgValue[1] - 1, orgValue[2]), y: closeValues[i] })
+            }
+            console.log(dataPoints);
+
+            var chart = new CanvasJS.Chart("chartContainer",
+                {
+                    title: {
+                        text: "Stock"
+                    },
+                    axisX: {
+                        title: "Date",
+                        labelFormatter: function (e) {
+                            return CanvasJS.formatDate(e.value, "DD MMM");
+                        },
+                        //labelAngle: -20
+                    },
+                    axisY: {
+                        title: "Close value",
+                        includeZero: false
+                    },
+                    data: [
+                        {
+                            type: "line",
+                            dataPoints: dataPoints
+                            //[
+                            //    { x: new Date(2010, 0, 3), y: 25 },                            
+                            //]
+                        }
+                    ]
+                });
+            chart.render();
+        }
+    </script>
+    <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+</head>
+<body>
+    <div id="chartContainer" style="height: 500px; width: 100%;"></div>
+</body>
+</html>
